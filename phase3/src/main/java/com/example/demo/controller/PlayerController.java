@@ -10,6 +10,9 @@ import com.example.demo.dto.AnswerQuestionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/players")
 public class PlayerController {
@@ -30,5 +33,13 @@ public class PlayerController {
             @RequestBody AnswerQuestionDTO answerDTO) {
         Player updatedPlayer = playerService.answerQuestion(playerId, answerDTO);
         return ResponseEntity.ok(updatedPlayer);
+    }
+
+    @GetMapping("/{playerId}/answered")
+    public ResponseEntity<List<Player.AnsweredQuestion>> answeredQuestions(
+            @PathVariable String playerId) {
+
+        List<Player.AnsweredQuestion> answeredQuestions = playerService.getAnsweredQuestions(playerId);
+        return ResponseEntity.ok(answeredQuestions);
     }
 }

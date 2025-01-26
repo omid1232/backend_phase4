@@ -18,6 +18,12 @@ public class PlayerService {
 
     @Autowired
     private QuestionRepository questionRepository;
+    public List<Player.AnsweredQuestion> getAnsweredQuestions(String playerId) {
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new IllegalArgumentException("Player not found"));
+        return player.getAnsweredQuestions();
+    }
+
 
     public Player followDesigner(String playerId, FollowedDesignerDTO followedDesignerDTO) {
         Player player = playerRepository.findById(playerId)
