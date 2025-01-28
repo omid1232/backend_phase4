@@ -10,5 +10,9 @@ public class FollowedDesignerDTO {
     public String getDesignerId() {
         return this.designerId;
     }
+
+    public void setDesignerId(String designerId) {
+        this.designerId = designerId;
+    }
 }
 

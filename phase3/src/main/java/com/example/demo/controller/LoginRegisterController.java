@@ -21,14 +21,18 @@ public class LoginRegisterController {
 
     @PostMapping("/player")
     public ResponseEntity<?> loginPlayer(@RequestBody Player loginRequest) {
-        System.out.println("kiiiiir");
+        // Use Optional<Player> to handle the result of findByUsername
         Optional<Player> player = playerRepository.findByUsername(loginRequest.getUsername());
 
         if (player.isPresent() && player.get().getPassword().equals(loginRequest.getPassword())) {
-            return ResponseEntity.ok().body("{\"message\":\"Player login successful\"}");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Login successful",
+                    "playerId", player.get().getId() // Return playerId here
+            ));
         }
-        return ResponseEntity.status(401).body("{\"message\":\"Invalid player credentials\"}");
+        return ResponseEntity.status(401).body(Map.of("message", "Invalid player credentials"));
     }
+
 
     @PostMapping("/designer")
     public ResponseEntity<?> loginDesigner(@RequestBody Designer loginRequest) {

@@ -17,6 +17,7 @@ public class Player {
     private String password;
     private int score;
 
+    private List<String> followedDesignerIds = new ArrayList<>();
     private List<AnsweredQuestion> answeredQuestions = new ArrayList<>();
 
     @Data
@@ -24,6 +25,12 @@ public class Player {
         private String questionId;
         private String yourAnswer;
         private boolean isCorrect;
+
+        public AnsweredQuestion(String questionId, String yourAnswer, boolean isCorrect) {
+            this.setYourAnswer(yourAnswer);
+            this.setQuestionId(questionId);
+            this.setIsCorrect(isCorrect);
+        }
 
         public String getQuestionId() {
             return questionId;
@@ -50,7 +57,6 @@ public class Player {
         }
     }
 
-    private List<String> followedDesignerIds;// Designers the player is following
 
     public List<String> getFollowedDesignerIds() {
         return followedDesignerIds;
@@ -83,5 +89,22 @@ public class Player {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAnsweredQuestions(List<AnsweredQuestion> answeredQuestions) {
+        this.answeredQuestions = answeredQuestions;
+    }
+
+    public void setFollowedDesignerIds(List<String> followedDesignerIds) {
+        this.followedDesignerIds = followedDesignerIds;
+    }
+
 }
 
