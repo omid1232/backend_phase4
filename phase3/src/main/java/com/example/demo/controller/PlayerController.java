@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.FollowedDesignerDTO;
+import com.example.demo.model.Designer;
 import com.example.demo.model.Player;
 import com.example.demo.model.Question;
 import com.example.demo.repository.PlayerRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.dto.AnswerQuestionDTO;
@@ -75,6 +77,12 @@ public class PlayerController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("message", "Error fetching random question.", "error", e.getMessage()));
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Player>> getSortedPlayers() {
+        List<Player> players = playerRepository.findAll(Sort.by(Sort.Direction.DESC, "score"));
+        return ResponseEntity.ok(players);
     }
 }
 

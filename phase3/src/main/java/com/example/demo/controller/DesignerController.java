@@ -28,7 +28,7 @@ public class DesignerController {
 
     @GetMapping("/{designerId}/questions")
     public ResponseEntity<List<Question>> getQuestionsByDesigner(@PathVariable String designerId) {
-        System.out.println("annnn");
+//        System.out.println("annnn");
         List<Question> questions = designerService.getQuestionsByDesigner(designerId);
         return ResponseEntity.ok(questions);
     }
@@ -39,14 +39,14 @@ public class DesignerController {
             @RequestBody Question question) {
         System.out.println(designerId);
         System.out.println(question);
-        System.out.println("sexxx");
+//        System.out.println("sexxx");
         Question createdQuestion = questionService.createQuestion(question, designerId);
         return ResponseEntity.ok(createdQuestion);
     }
 
         @GetMapping
         public ResponseEntity<List<Designer>> getAllDesigners() {
-            System.out.println("kiiiiiiir");
+//            System.out.println("kiiiiiiir");
             List<Designer> designers = designerRepository.findAll();
             return ResponseEntity.ok(designers);
         }
