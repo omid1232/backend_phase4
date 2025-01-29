@@ -79,7 +79,7 @@ public class PlayerController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/getSortedPlayers")
     public ResponseEntity<List<Player>> getSortedPlayers() {
         List<Player> players = playerRepository.findAll(Sort.by(Sort.Direction.DESC, "score"));
         return ResponseEntity.ok(players);
