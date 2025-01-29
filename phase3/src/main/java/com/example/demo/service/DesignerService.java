@@ -7,13 +7,15 @@ import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.DesignerRepository;
 import com.example.demo.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DesignerService {
+
     @Autowired
     private DesignerRepository designerRepository;
 
@@ -23,6 +25,38 @@ public class DesignerService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    /**
+     * Cache all questions by designer ID
+     */
+    @Cacheable(value = "questionsByDesigner", key = "#designerId")
+    public List<Question> getQuestionsByDesigner(String designerId) {
+        List<Question> questions = questionRepository.findByDesignerId(designerId);
+
+        questions.forEach(question -> {
+            if (question.getCategoryId() != null) {
+                Category category = categoryRepository.findById(question.getCategoryId())
+                        .orElse(null);
+                if (category != null) {
+                    question.setCategoryId(category.getName());
+                }
+            }
+        });
+
+        return questions;
+    }
+
+    /**
+     * Cache all questions by category ID
+     */
+    @Cacheable(value = "questionsByCategory", key = "#categoryId")
+    public List<Question> getQuestionsByCategory(String categoryId) {
+        return questionRepository.findByCategoryId(categoryId);
+    }
+
+    /**
+     * When creating a new question, remove cached data for the affected designer & category
+     */
+    @CacheEvict(value = {"questionsByDesigner", "questionsByCategory"}, allEntries = true)
     public Question createQuestion(Question question, String designerId) {
         // Validate the designer
         Designer designer = designerRepository.findById(designerId)
@@ -39,28 +73,9 @@ public class DesignerService {
 
         // Set the designerId and save the question
         question.setDesignerId(designerId);
-
         designer.getCreatedQuestions().add(question);
         designerRepository.save(designer);
 
         return questionRepository.save(question);
-    }
-    public List<Question> getQuestionsByDesigner(String designerId) {
-        List<Question> questions = questionRepository.findByDesignerId(designerId);
-
-        questions.forEach(question -> {
-            if (question.getCategoryId() != null) {
-                Category category = categoryRepository.findById(question.getCategoryId())
-                        .orElse(null);
-                if (category != null) {
-                    question.setCategoryId(category.getName()); // Add a new field `categoryName` to the Question model
-                }
-            }
-        });
-
-        return questions;
-    }
-    public List<Question> getQuestionsByCategory(String categoryId) {
-        return questionRepository.findByCategoryId(categoryId);
     }
 }
