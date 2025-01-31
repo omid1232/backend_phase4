@@ -79,4 +79,30 @@ public class QuestionController {
 
         return ResponseEntity.ok(questionsWithStatus);
     }
+
+    @GetMapping("/answered_by_player/{playerId}")
+        public ResponseEntity<List<Map<String, Object>>> getAnsweredQuestionsWithText(
+        @PathVariable String playerId) {
+    
+        // Fetch the player.
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new IllegalArgumentException("Player not found"));
+
+        // For each answered question, look up its Question object to get questionText.
+        List<Map<String, Object>> results = player.getAnsweredQuestions().stream().map(aq -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("questionId", aq.getQuestionId());
+            item.put("yourAnswer", aq.getYourAnswer());
+            item.put("isCorrect", aq.getIsCorrect());
+
+            // Look up the question in Mongo by questionId
+            Question question = questionRepository.findById(aq.getQuestionId()).orElse(null);
+            item.put("questionText", question != null ? question.getQuestionText() : "Unknown");
+
+            return item;
+        }).toList();
+
+        return ResponseEntity.ok(results);
+    }
+
 }
