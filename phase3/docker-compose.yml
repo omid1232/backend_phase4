@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build: D:\mycodes\Web Programming\backend_phase3\phase3  # Path to your backend folder
+    container_name: backend-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo--db:27017/mydatabase
+    networks:
+      - mynetwork
+
+  frontend:
+    build: D:\mycodes\Web Programming\Project\Web_Project\phase1\myproject  # Path to your frontend folder
+    container_name: frontend-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - mynetwork
+
+  mongo:
+    image: mongo
+    container_name: mongo--db
+    ports:
+      - "27017:27017"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -22,7 +22,10 @@ public class CategoryController {
     }
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
+        System.out.println("hello from category api");
         List<Category> categories = categoryService.getAllCategories();
+        System.out.println("hello from category api");
+        System.out.println(categories);
         return ResponseEntity.ok(categories);
     }
 }
